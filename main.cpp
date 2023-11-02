@@ -14,7 +14,7 @@ void create_executable(std::filesystem::path dirPath, std::string projectName)
     std::ofstream cmakeF(dirPath / "CMakeLists.txt");
     cmakeF  << "cmake_minimum_required(VERSION 3.0.0)\n"
         << "project(" << projectName << ")\n\n"
-        << "add_executable(main main.cpp)";
+        << "add_executable(" << projectName << " main.cpp)";
 
     std::ofstream mainF(dirPath / "main.cpp");
     mainF << "#include <iostream>\n\n"
@@ -38,38 +38,58 @@ void create_library(std::filesystem::path dirPath, std::string projectName)
 
     std::ofstream cmakeFile(dirPath / "CMakeLists.txt");
     cmakeFile << "add_library(" << projectName << " src/" << projectName << ".cpp)"
-        << "\ntarget_include_directories(" << projectName << "PUBLIC ./include)\n";
+        << "\ntarget_include_directories(" << projectName << " PUBLIC ./include)\n";
 }
+
+void printHelp()
+{
+    std::cout << "usage: quick-cmake <path> [-l] [name]\n";
+}
+    
 
 int main(int argc, char* argv[])
 {
-    if(argc < 2)
+    cxxopts::Options options("quick-cmake", "a tool to quickly generate cmake executable and library directories");
+
+    options.add_options()
+            ("path", "location for new cmake library", cxxopts::value<std::string>())
+            ("l", "library")
+            ("h", "help")
+            ("name", "project (or library) name", cxxopts::value<std::string>());
+    
+    options.parse_positional({"path", "name"});
+
+    auto args = options.parse(argc, argv);
+    
+    if(args["h"].as<bool>() || args.count("path") == 0)
     {
-        std::cout << "usage: quick-cmake <path> [name]";
+        printHelp();
         return 1;
     }
 
-    std::filesystem::path dirPath = argv[1];
+    std::filesystem::path dirPath = args["path"].as<std::string>();
     if(std::filesystem::exists(dirPath / "CMakeLists.txt"))
     {
         std::cout << "Cmake project already exists in this directory\n";
         return 1;
     }
 
-    std::string projectName = argc > 3 ? argv[2] : dirPath.filename();
+    std::string projectName = args.count("name") > 0 ? args["name"].as<char*>() : dirPath.filename();
+
     if(projectName == ".")
     {
         projectName = std::filesystem::current_path().filename();
     }
 
     std::filesystem::create_directories(dirPath);
-    if(argc > 2 && strcmp(argv[2], "-l") == 0)
+    bool isLibrary = args["l"].as<bool>();
+    if(isLibrary)
     {
         create_library(dirPath, projectName);
     }
     else
     {
-        create_library(dirPath, projectName);
+        create_executable(dirPath, projectName);
     }
     return 0;
 }
