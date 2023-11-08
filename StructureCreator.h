@@ -48,24 +48,26 @@ public:
 class StructureCreator
 {
 public:
-  StructureCreator(std::string projectName, std::filesystem::path dirPath, Type type, Format format) : projectName(projectName), dirPath(dirPath), type(type), format(format)
-    {}
+    StructureCreator(std::string projectName, std::filesystem::path dirPath, Type type, Format format) : projectName(projectName), dirPath(dirPath), type(type), format(format)
+    {
 
-  void create()
-  {
-      strategy->create(projectName, dirPath);
-  }
+    }
 
-  void setStrategy(std::unique_ptr<Strategy> strat) 
-  {
-      strategy = std::move(strat);
-  }
+    void create()
+    {
+        strategy->create(projectName, dirPath);
+    }
+
+    void setStrategy(std::unique_ptr<Strategy> strat) 
+    {
+        strategy = std::move(strat);
+    }
 
 private:
-  std::string projectName;
-  std::filesystem::path dirPath;
-  Type type;
-  Format format;
+    std::string projectName;
+    std::filesystem::path dirPath;
+    Type type;
+    Format format;
 
-  std::unique_ptr<Strategy> strategy = std::make_unique<DefaultStrategy>();
+    std::unique_ptr<Strategy> strategy = std::make_unique<DefaultStrategy>();
 };

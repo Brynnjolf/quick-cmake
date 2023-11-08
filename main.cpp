@@ -87,14 +87,6 @@ int main(int argc, char* argv[])
     }
 
     std::filesystem::create_directories(dirPath);
-    bool isLibrary = args["l"].as<bool>();
-    if(isLibrary)
-    {
-        create_library(dirPath, projectName);
-    }
-    else
-    {
-        create_executable(dirPath, projectName);
-    }
+    StructureCreator(projectName, dirPath, Type::Executable, Format::Default);
     return 0;
 }
