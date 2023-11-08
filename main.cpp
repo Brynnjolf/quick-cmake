@@ -8,15 +8,18 @@
 #include <string>
 #include <vector>
 
+#include <StructureCreator.h>
+
 void create_executable(std::filesystem::path dirPath, std::string projectName)
 {
 
     std::ofstream cmakeF(dirPath / "CMakeLists.txt");
+    std::ofstream mainF(dirPath / "main.cpp");
+
     cmakeF  << "cmake_minimum_required(VERSION 3.0.0)\n"
         << "project(" << projectName << ")\n\n"
         << "add_executable(" << projectName << " main.cpp)";
 
-    std::ofstream mainF(dirPath / "main.cpp");
     mainF << "#include <iostream>\n\n"
         << "int main()\n"
         << "{\n"
@@ -55,6 +58,8 @@ int main(int argc, char* argv[])
             ("path", "location for new cmake library", cxxopts::value<std::string>())
             ("l", "library")
             ("h", "help")
+            ("Qt-Widgets", "target that is generated is for a Qt-Widget project")
+            ("Qml", "target that is generated is for a Qml project")
             ("name", "project (or library) name", cxxopts::value<std::string>());
     
     options.parse_positional({"path", "name"});

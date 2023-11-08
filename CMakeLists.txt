@@ -15,3 +15,5 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(cxxopts)
 
 target_link_libraries(quick-cmake cxxopts)
+
+target_include_directories(quick-cmake PUBLIC .)
