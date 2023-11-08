@@ -8,7 +8,7 @@
 #include <string>
 #include <vector>
 
-#include <StructureCreator.h>
+#include <FileBuilder/FileBuilder.h>
 
 void create_executable(std::filesystem::path dirPath, std::string projectName)
 {
@@ -38,6 +38,7 @@ void create_library(std::filesystem::path dirPath, std::string projectName)
     std::ofstream hFile(includePath / (projectName + ".h"));
     std::ofstream srcFile(srcPath / (projectName + ".cpp"));
     srcFile << "#include <" << projectName << "/" << projectName << ".h>\n";
+    hFile << "#pragma once\n";
 
     std::ofstream cmakeFile(dirPath / "CMakeLists.txt");
     cmakeFile << "add_library(" << projectName << " src/" << projectName << ".cpp)"
@@ -58,8 +59,8 @@ int main(int argc, char* argv[])
             ("path", "location for new cmake library", cxxopts::value<std::string>())
             ("l", "library")
             ("h", "help")
-            ("Qt-Widgets", "target that is generated is for a Qt-Widget project")
-            ("Qml", "target that is generated is for a Qml project")
+            ("Qml", "generate qml project format")
+            ("Qt", "generate Qt project format")
             ("name", "project (or library) name", cxxopts::value<std::string>());
     
     options.parse_positional({"path", "name"});
@@ -72,6 +73,15 @@ int main(int argc, char* argv[])
         return 1;
     }
 
+    bool qt = args["Qt"].as<bool>();
+    bool qml = args["Qml"].as<bool>();
+
+    if(qt && qml)
+    {
+        std::cerr << "Qt and Qml options are mutually exclusive.";
+        return 1;
+    }
+
     std::filesystem::path dirPath = args["path"].as<std::string>();
     if(std::filesystem::exists(dirPath / "CMakeLists.txt"))
     {
@@ -79,14 +89,26 @@ int main(int argc, char* argv[])
         return 1;
     }
 
-    std::string projectName = args.count("name") > 0 ? args["name"].as<char*>() : dirPath.filename();
+    std::string projectName = args.count("name") > 0 ? args["name"].as<std::string>() : dirPath.filename().string();
 
     if(projectName == ".")
     {
         projectName = std::filesystem::current_path().filename();
     }
+    
+    Type type = args["l"].as<bool>() ? Type::Lib : Type::Exe;
+    Format format;
+    if(qt || qml)
+    {
+        format = qt ? Format::Qt : Format::Qml;
+    }
+    else
+    {
+        format = Format::Default;
+    }
 
     std::filesystem::create_directories(dirPath);
-    StructureCreator(projectName, dirPath, Type::Executable, Format::Default);
+    FileBuilder fileBuilder(projectName, dirPath, type, format);
+    fileBuilder.create(); 
     return 0;
 }
