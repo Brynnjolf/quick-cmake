@@ -1,5 +1,6 @@
 #pragma once
 
+#include <iostream>
 #include <string>
 #include <filesystem>
 #include <fstream>
@@ -60,17 +61,67 @@ public:
     {
         std::ofstream cmakeF(dirPath / "CMakeLists.txt");
         std::ofstream mainF(dirPath / "main.cpp");
+        std::ofstream mainWindowSrcF(dirPath / "mainwindow.cpp");
+        std::ofstream mainWindowHeaderF(dirPath / "mainwindow.h");
 
-        cmakeF  << "cmake_minimum_required(VERSION 3.0.0)\n"
-            << "project(" << projectName << ")\n\n"
-            << "add_executable(" << projectName << " main.cpp)";
+        cmakeF << "cmake_minimum_required(VERSION 3.16)\n"
+            << "\n"
+            << "project(" << projectName << " VERSION 1.0.0 LANGUAGES CXX)\n"
+            << "\n"
+            << "set(CMAKE_CXX_STANDARD 17)\n"
+            << "set(CMAKE_CXX_STANDARD_REQUIRED ON)\n"
+            << "list(APPEND CMAKE_PREFIX_PATH ~/Qt/6.6.0/gcc_64/lib/cmake)\n"
+            << "\n"
+            << "find_package(Qt6 REQUIRED COMPONENTS Widgets)\n"
+            << "qt_standard_project_setup()\n"
+            << "\n"
+            << "qt_add_executable(" << projectName << "\n"
+            << "    mainwindow.cpp\n"
+            << "    main.cpp\n"
+            << ")\n"
+            << "\n"
+            << "target_link_libraries(" << projectName << " PRIVATE Qt6::Widgets)\n"
+            << "\n"
+            << "set_target_properties(" << projectName << " PROPERTIES\n"
+            << "    WIN32_EXECUTABLE ON\n"
+            << "    MACOSX_BUNDLE ON\n"
+            << ")\n";
 
-        mainF << "#include <iostream>\n\n"
-            << "int main()\n"
+        mainF << "#include \"mainwindow.h\"\n"
+            << "\n"
+            << "#include <QApplication>\n"
+            << "\n"
+            << "int main(int argc, char *argv[])\n"
             << "{\n"
-            << "\tstd::cout << \"hello from " << projectName << "\\n\";\n"
-            << "\treturn 0;\n"
+            << "    QApplication a(argc, argv);\n"
+            << "    MainWindow w;\n"
+            << "    w.show();\n"
+            << "    return a.exec();\n"
             << "}\n";
+
+        mainWindowSrcF << "#include \"mainwindow.h\"\n"
+            << "\n"
+            << "MainWindow::MainWindow(QWidget *parent)\n"
+            << "    : QMainWindow(parent)\n"
+            << "{\n"
+            << "}\n"
+            << "\n"
+            << "MainWindow::~MainWindow()\n"
+            << "{\n"
+            << "}\n";
+
+       mainWindowHeaderF << "#pragma once\n"
+            << "\n"
+            << "#include <QMainWindow>\n"
+            << "\n"
+            << "class MainWindow : public QMainWindow\n"
+            << "{\n"
+            << "    Q_OBJECT\n"
+            << "\n"
+            << "public:\n"
+            << "    MainWindow(QWidget *parent = nullptr);\n"
+            << "    ~MainWindow();\n"
+            << "};\n";
     }
 };
 
@@ -79,18 +130,7 @@ class QtLibraryStrategy : public Strategy
 public:
     void create(std::string projectName, std::filesystem::path dirPath) const override
     {
-        std::filesystem::path srcPath = dirPath / "src";
-        std::filesystem::path includePath = dirPath / "include" / projectName;
-        std::filesystem::create_directories(includePath);  
-        std::filesystem::create_directories(srcPath);  
-
-        std::ofstream hFile(includePath / (projectName + ".h"));
-        std::ofstream srcFile(srcPath / (projectName + ".cpp"));
-        srcFile << "#include <" << projectName << "/" << projectName << ".h>\n";
-
-        std::ofstream cmakeFile(dirPath / "CMakeLists.txt");
-        cmakeFile << "add_library(" << projectName << " src/" << projectName << ".cpp)"
-            << "\ntarget_include_directories(" << projectName << " PUBLIC ./include)\n";
+        std::cout << "Not implemented yet. Sorry\n";
     }
 };
 
@@ -186,15 +226,6 @@ class QmlLibraryStrategy : public Strategy
 public:
     void create(std::string projectName, std::filesystem::path dirPath) const override
     {
-        std::filesystem::path srcPath = dirPath / "src";
-        std::filesystem::path includePath = dirPath / "include" / projectName;
-        std::filesystem::create_directories(includePath);  
-        std::filesystem::create_directories(srcPath);  
-
-        std::ofstream hFile(includePath / (projectName + ".h"));
-        std::ofstream srcFile(srcPath / (projectName + ".cpp"));
-        srcFile << "#include <" << projectName << "/" << projectName << ".h>\n";
-
-        std::ofstream cmakeFile(dirPath / "CMakeLists.txt");
+        std::cout << "Not implemented yet. Sorry\n";
     }
 };
