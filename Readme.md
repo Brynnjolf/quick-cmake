@@ -4,6 +4,12 @@ quick-cmake is used to generate modules for cmake projects.
 This involves generating simple filesystem structures for executables or
 libraries, that can be used in isolation, or easily linked to a greater project.
 
+### Usage
+
+`$ quick-cmake [options] <path> [<name>]`
+
+#### options
+
 #### basic-usage: executables
 `$ quick-cmake project`
 
@@ -41,7 +47,7 @@ project
 ```
 This library can then be easily linked to a parent project by simply calling
 
-```
+```cmake
 add_subdirectory(project)
 target_link_libaries(parent PUBLIC project)
 ```

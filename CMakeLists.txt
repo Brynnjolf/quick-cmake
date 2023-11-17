@@ -15,6 +15,7 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(cxxopts)
 
 add_subdirectory(FileBuilder)
+add_subdirectory(tests)
 
 target_link_libraries(quick-cmake 
     cxxopts
