@@ -22,4 +22,6 @@ target_link_libraries(quick-cmake
     FileBuilder
 )
 
+target_link_libraries(test_FileBuilder FileBuilder)
+
 target_include_directories(quick-cmake PUBLIC .)
