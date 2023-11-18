@@ -130,7 +130,33 @@ class QtLibraryStrategy : public Strategy
 public:
     void create(std::string projectName, std::filesystem::path dirPath) const override
     {
-        std::cout << "Not implemented yet. Sorry\n";
+
+        std::ofstream cmakeF(dirPath / "CMakeLists.txt");
+        std::ofstream srcF(dirPath / (projectName + ".cpp"));
+        std::ofstream headerF(dirPath / (projectName + ".h"));
+
+
+        cmakeF << "qt_add_library(" << projectName << " STATIC\n"
+            << "    " << projectName << ".cpp\n"
+            << ")\n"
+            << "target_link_libraries(" << projectName << " PRIVATE Qt6::Widgets)\n"
+            << "target_include_directories(" << projectName << " INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})\n";
+
+        headerF << "#pragma once\n"
+            << "\n"
+            << "class " << projectName << "\n"
+            << "{\n"
+            << "public:\n"
+            << "    " << projectName << "();\n"
+            << "};\n";
+
+        srcF << "#include \"" << projectName << ".h\"\n"
+            << "\n"
+            << "" << projectName << "::" << projectName << "()\n"
+            << "{\n"
+            << "}\n";
+
+        
     }
 };
 
