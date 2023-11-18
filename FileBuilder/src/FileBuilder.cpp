@@ -36,4 +36,14 @@ FileBuilder::FileBuilder(std::string projectName, std::filesystem::path dirPath,
     }
 }
 
+void FileBuilder::create()
+{
+    strategy->create(projectName, dirPath);
+}
+
+void FileBuilder::setStrategy(std::unique_ptr<Strategy>&& strat) 
+{
+    strategy = std::move(strat);
+
+}
 

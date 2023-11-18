@@ -20,16 +20,8 @@ class FileBuilder
 public:
     FileBuilder(std::string projectName, std::filesystem::path dirPath, Type type, Format format);
 
-    void create()
-    {
-        strategy->create(projectName, dirPath);
-    }
-
-    void setStrategy(std::unique_ptr<Strategy>&& strat) 
-    {
-        strategy = std::move(strat);
-
-    }
+    void create();
+    void setStrategy(std::unique_ptr<Strategy>&& strat);
 
 private:
     std::string projectName;

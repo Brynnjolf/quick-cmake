@@ -14,23 +14,28 @@ void printHelp()
 {
     std::cout << "usage: quick-cmake <path> [-l] [name]\n";
 }
-    
 
-int main(int argc, char* argv[])
+cxxopts::ParseResult parseArgs(int argc, char* argv[])
 {
     cxxopts::Options options("quick-cmake", "a tool to quickly generate cmake executable and library directories");
 
     options.add_options()
-            ("path", "location for new cmake library", cxxopts::value<std::string>())
-            ("l", "library")
-            ("h", "help")
-            ("Qml", "generate qml project format")
-            ("Qt", "generate Qt project format")
-            ("name", "project (or library) name", cxxopts::value<std::string>());
-    
+        ("path", "location for new cmake library", cxxopts::value<std::string>())
+        ("l", "library")
+        ("h", "help")
+        ("Qml", "generate qml project format")
+        ("Qt", "generate Qt project format")
+        ("name", "project (or library) name", cxxopts::value<std::string>());
+
     options.parse_positional({"path", "name"});
 
-    auto args = options.parse(argc, argv);
+    return options.parse(argc, argv);
+}
+    
+
+int main(int argc, char* argv[])
+{
+    auto args = parseArgs(argc, argv);
     
     if(args["h"].as<bool>() || args.count("path") == 0)
     {
@@ -40,6 +45,10 @@ int main(int argc, char* argv[])
 
     bool qt = args["Qt"].as<bool>();
     bool qml = args["Qml"].as<bool>();
+    Type type = args["l"].as<bool>() ? Type::Lib : Type::Exe;
+
+    std::filesystem::path dirPath = args["path"].as<std::string>();
+    std::string projectName = args.count("name") ? args["name"].as<std::string>() : dirPath.filename().string();
 
     if(qt && qml)
     {
@@ -47,21 +56,18 @@ int main(int argc, char* argv[])
         return 1;
     }
 
-    std::filesystem::path dirPath = args["path"].as<std::string>();
     if(std::filesystem::exists(dirPath / "CMakeLists.txt"))
     {
         std::cout << "Cmake project already exists in this directory\n";
         return 1;
     }
 
-    std::string projectName = args.count("name") > 0 ? args["name"].as<std::string>() : dirPath.filename().string();
 
     if(projectName == ".")
     {
         projectName = std::filesystem::current_path().filename();
     }
     
-    Type type = args["l"].as<bool>() ? Type::Lib : Type::Exe;
     Format format;
     if(qt || qml)
     {
