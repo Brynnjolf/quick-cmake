@@ -1,6 +1,4 @@
-find_package(Catch2 REQUIRED)
-include(CTest)
-enable_testing()
+include(Catch)
 
 add_executable(test_FileBuilder test_FileBuilder.cpp)
 
@@ -9,3 +7,4 @@ target_link_libraries(test_FileBuilder
     FileBuilder
 )
 
+catch_discover_tests(test_FileBuilder)

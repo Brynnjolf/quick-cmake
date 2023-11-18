@@ -1,4 +1,10 @@
-## Quick-Cmake: Project File Generator
+<div align="center">
+
+# Quick-Cmake
+### Project File Generator
+[![CMake on a single platform](https://github.com/Brynnjolf/quick-cmake/actions/workflows/cmake-single-platform.yml/badge.svg?branch=master)](https://github.com/Brynnjolf/quick-cmake/actions/workflows/cmake-single-platform.yml)
+[![CMake](https://img.shields.io/badge/CMake-%23008FBA.svg?style=flat&logo=cmake&logoColor=white)](https://cmake.org/documentation/)
+</div>
 
 quick-cmake is used to generate modules for cmake projects.
 This involves generating simple filesystem structures for executables or
@@ -8,10 +14,8 @@ libraries, that can be used in isolation, or easily linked to a greater project.
 
 `$ quick-cmake [options] <path> [<name>]`
 
-#### options
-
 #### basic-usage: executables
-`$ quick-cmake project`
+`$ quick-cmake "project"`
 
 Generates a cmake executable in the `project/` directory, creating the dir if it
 does not exist. It will not overwrite an existing Cmake project.
@@ -29,7 +33,7 @@ project
 
 #### basic-usage: libraries
 
-`$ quick-cmake -l project`
+`$ quick-cmake -l "project"`
 
 generates a cmake library at `project/`. It will have the following structure:
 
