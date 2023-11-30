@@ -14,6 +14,9 @@ FileBuilder::FileBuilder(std::string projectName, std::filesystem::path dirPath,
             case Format::Qml:
                 setStrategy(std::make_unique<QmlExecutableStrategy>());
                 break;
+            case Format::Catch:
+                setStrategy(std::make_unique<CatchTestStrategy>());
+                break;
             case Format::Default:
                 setStrategy(std::make_unique<ExecutableStrategy>());
                 break;
@@ -28,6 +31,10 @@ FileBuilder::FileBuilder(std::string projectName, std::filesystem::path dirPath,
                 break;
             case Format::Qml:
                 setStrategy(std::make_unique<QmlLibraryStrategy>());
+                break;
+            case Format::Catch:
+                std::cout << "Catch tests cannot be a library. Generating catch executable...\n";
+                setStrategy(std::make_unique<CatchTestStrategy>());
                 break;
             case Format::Default:
                 setStrategy(std::make_unique<LibraryStrategy>());

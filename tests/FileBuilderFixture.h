@@ -8,6 +8,7 @@ private:
 public:
     FileBuilderFixture()
     {
+        std::filesystem::remove_all(test_root_path);
         REQUIRE(std::filesystem::create_directory(test_root_path));
     }
     ~FileBuilderFixture()

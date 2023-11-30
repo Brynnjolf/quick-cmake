@@ -2,6 +2,23 @@
 #include <FileBuilder/FileBuilder.h>
 #include "FileBuilderFixture.h"
 
+bool isTextInFile(std::string&& text, std::string&& filePath) {
+    std::ifstream file(filePath);
+    std::string line;
+
+    if(file.is_open()) {
+        while(std::getline(file, line)) {
+            if(line.find(text) != std::string::npos) {
+                return true;
+            }
+        }
+    } else {
+        std::cout << "error opening file " << filePath << std::endl;
+        return false;
+    }
+    return false;
+}
+
 
 TEST_CASE_METHOD(FileBuilderFixture, "default executable creation")
 {
@@ -58,5 +75,17 @@ TEST_CASE_METHOD(FileBuilderFixture, "Qt Library creation")
     REQUIRE(std::filesystem::exists(rootPath() / "testProject.h"));
 }
 
+TEST_CASE_METHOD(FileBuilderFixture, "Catch Test creation")
+{
+
+    FileBuilder builder("testProject", rootPath(), Type::Exe, Format::Catch);
+    builder.create();
+
+    REQUIRE(std::filesystem::exists(rootPath() / "CMakeLists.txt"));
+    REQUIRE(std::filesystem::exists(rootPath() / "main.cpp"));
+
+    REQUIRE(isTextInFile("find_package(Catch2 REQUIRED)", rootPath() / "CMakeLists.txt"));
+    REQUIRE(isTextInFile("TEST_CASE", rootPath() / "main.cpp"));
+}
 
 

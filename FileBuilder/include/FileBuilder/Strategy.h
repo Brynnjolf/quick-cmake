@@ -255,3 +255,33 @@ public:
         std::cout << "Not implemented yet. Sorry\n";
     }
 };
+
+class CatchTestStrategy : public Strategy
+{
+public:
+    void create(std::string projectName, std::filesystem::path dirPath) const override
+    {
+        std::ofstream cmakeF(dirPath / "CMakeLists.txt");
+        std::ofstream mainF(dirPath / "main.cpp");
+
+        cmakeF  << "cmake_minimum_required(VERSION 3.0.0)\n"
+            << "project(" << projectName << ")\n"
+            << "\n"
+            << "add_compile_options(-fsanitize=address)\n"
+            << "add_link_options(-fsanitize=address)\n"
+            << "\n"
+            << "find_package(Catch2 REQUIRED)\n"
+            << "\n"
+            << "add_executable(" << projectName << " main.cpp)\n"
+            << "\n"
+            << "target_link_libraries(" << projectName << " Catch2::Catch2WithMain)\n";
+
+        mainF  << "#include <catch2/catch_test_macros.hpp>\n"
+            << "\n"
+            << "\n"
+            << "TEST_CASE(\"run tests\") {\n"
+            << "    REQUIRE(true);\n"
+            << "}\n";
+
+    }
+};

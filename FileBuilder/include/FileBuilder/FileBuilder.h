@@ -12,7 +12,8 @@ enum class Format
 {
     Default,
     Qt,
-    Qml
+    Qml,
+    Catch
 };
 
 class FileBuilder
