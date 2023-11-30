@@ -14,6 +14,11 @@ libraries, that can be used in isolation, or easily linked to a greater project.
 
 `$ quick-cmake [options] <path> [<name>]`
 
+**path** is the location at which the new cmake project is created.
+
+**name** is the name of the project (and default target) that will be generated.
+if **name** is not included, it will be set as the name of the directory at **path**.
+
 #### basic-usage: executables
 `$ quick-cmake "project"`
 
@@ -59,3 +64,14 @@ the interesting directory structure of the `include/project/project.h` allows
 a user to use `#include <project/project.h>` for any target that the library
 is linked to. convenient!
 
+## Options
+
+**-l**: create's a cmake library module instead of an executable.
+
+**--fmt \<format\>**: set's the format of the created project. This allows for quick
+generation of "templated" libraries.
+
+available `<format>` arguments are:
+- **Qt** - Qt widgets application
+- **Qml** - Qml application
+- **Catch** - Catch2 test executable (this will override the "library" option)
