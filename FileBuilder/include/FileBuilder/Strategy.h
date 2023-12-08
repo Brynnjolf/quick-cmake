@@ -22,6 +22,8 @@ public:
 
         cmakeF  << "cmake_minimum_required(VERSION 3.0.0)\n"
             << "project(" << projectName << ")\n\n"
+            << "set(CMAKE_CXX_STANDARD 17)\n"
+            << "set(CMAKE_CXX_STANDARD_REQUIRED ON)\n"
             << "add_executable(" << projectName << " main.cpp)";
 
         mainF << "#include <iostream>\n\n"
